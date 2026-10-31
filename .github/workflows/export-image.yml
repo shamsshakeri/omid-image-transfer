@@ -1,0 +1,28 @@
+
+name: Export OMID Docker Image
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Pull official OMID image
+        run: |
+          docker pull --platform linux/amd64 ghcr.io/omidiran-gaming/omid-3x-ui:sha-549b18f62051b1db2b45e44a70ee54ba4d94f745
+
+      - name: Save image
+        run: |
+          docker save ghcr.io/omidiran-gaming/omid-3x-ui:sha-549b18f62051b1db2b45e44a70ee54ba4d94f745 | gzip > omid-3x-ui.tar.gz
+
+      - name: Upload image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: omid-3x-ui-image
+          path: omid-3x-ui.tar.gz
+          retention-days: 1
